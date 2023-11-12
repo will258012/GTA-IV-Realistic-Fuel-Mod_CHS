@@ -68,9 +68,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\resSound.wav" />
     <None Include="GTAIV.ico" />
-    <Content Include="License.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
