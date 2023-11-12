@@ -7,7 +7,7 @@
 # 安装
 ## 在安装此脚本之前，请先安装[GTAIV完整版 的汉化补丁](https://b9348.gitee.io/index.html)。
 这是显示中文字符的前提条件。
-将[Release](releases/)中下载的文件解压缩至游戏根目录。
+将[Releases](https://github.com/will258012/GTA-IV-Realistic-Fuel-Mod_CHS/Releases)中下载的文件解压缩至游戏根目录。
 
 # 注意
 此脚本还使用了原版本的GUID（3583e09d-6c44-4820-85e9-93926307d4f8）。
