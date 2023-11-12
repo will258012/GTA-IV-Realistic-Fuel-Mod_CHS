@@ -1,26 +1,29 @@
 
-# GTA-IV-Realistic-Fuel-Mod
-This script has been modified by Gemei, and is based on the Ultimate Fuel Script v2.1.0.0 and Realistic Fuel Script 2.3.145.20929 which was developed by Pedro Rodrigues & Sandakelum.
-I have ported the mod to work with the latest version of GTA IV Complete Edition 1.2.0.43.
+## GTAIV-Realistic-Fuel-Mod 汉化版
 
-**INSTALLATION** 
-Just unzip extract the contents of the ZIP file you downloaded to
-GTA IV root directory folder. Keep the folders and paths intact.
+该脚本基于Pedro Rodrigues制作的[Ultimate Fuel Script v2.1.0.0](https://www.gtainside.com/en/gta4/mods/47700-ultimate-fuel-script-v2)和Sandakelum制作的[Realistic Fuel Script 2.3.145.20929](https://www.gtagaming.com/realistic-fuel-mod-2-2-0-5-f22621.html)。
+这个脚本适用于GTA IV完整版 (1.2.0.xx) 。
 
-**WARNING** 
-This script also shares Ultimate Fuel Script's GUID (which is
-3583e09d-6c44-4820-85e9-93926307d4f8). So don't use these two script together
-or it will cause a conflict in some events.
+# 安装
+## 在安装此脚本之前，请先安装[GTAIV完整版 的汉化补丁](https://b9348.gitee.io/index.html)。
+这是显示中文字符的前提条件。
+将[Release](releases/)中下载的文件解压缩至游戏根目录。
 
-**USAGE**
+# 注意
+此脚本还使用了原版本的GUID（3583e09d-6c44-4820-85e9-93926307d4f8）。
+所以不要同时使用这两个脚本，否则会在某些事件中引发冲突。
+
+# USAGE
 You don't need to worry, every help and which keys you should use will be
 provided to you as ingame instructions when you using this script. And almost
 everything is customizable to your needs.
 
-**HELPFUL TOOLS**
-If you need to change the display location of the fuel meter, consider using the DashboardPositioner.exe tool.
+# 工具
+如果需要更改燃油表的显示位置，请使用DashboardPositioner.exe。
 
-**CHANGE LOG** 
+# 更新日志
+
+
 2.4.x.x
 FIX Ported to GTA IV version 1.2.0.43.
 
@@ -58,12 +61,12 @@ FIX Fixed unwanted double if checks which can be collapsed into one check.
 FIX Dozen more minor bugs has been fixed.
 NOTE Fully commented newly added features and functions on the source code.
 
-**FAQ**
+# FAQ
 Q. GTA prompted an error  GTA IV FATAL ERROR Invalid resource detected - Please re-install the game.
 A. Just retry, the error should be gone. It sometimes happens when running the script for the first time.
 
 Q. Can I add entries in the settings (.ini) file for added, not replaced cars 
 A. Yes, use a trainer (Simple Native Trainer is recommended) and take note of the HASH code for that specific car. Open the settings file copy and paste any carbikeboatheli entry, and change the name of vehicle (inside []) to the hash code of your car. The values specified in this new entry should be loaded for your added cars, there is no limit to how many entries you can have.
 
-Q. Can you add stealing points for fuel 
-Q. They are in the mod already, they just don't show up on the mapradar. If you think a new location should be added, leave a comment at gta4-mods.com.
+Q. 能添加偷取燃油的点位吗？
+Q. 如果你想添加一个新的点位，
