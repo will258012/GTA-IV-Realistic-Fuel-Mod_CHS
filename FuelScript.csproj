@@ -90,7 +90,15 @@
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  
+  <Target Name="CopyFilesToGTAIV" AfterTargets="Build">
+  <ItemGroup>
+    <FilesToCopy Include="$(OutputPath)\FuelScript.net.dll" />
+    <FilesToCopy Include="$(OutputPath)\FuelScript.log" />
+    <FilesToCopy Include="$(OutputPath)\FuelScript.ini" />
+  </ItemGroup>
+
+  <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="D:\SteamLibrary\steamapps\common\Grand Theft Auto IV\GTAIV\scripts" />
+</Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
