@@ -57,11 +57,11 @@ namespace FuelScript
                 {
                     CurrentVehicle.Metadata.Fuel = args.ToFloat(0);
                 }
-                catch (Exception crap) 
+                catch (Exception crap)
                 {
-                    Log("ERROR: SetFuel[debug]", crap.Message); 
-                    Game.Console.Print(String.Format("Error setting fuel: {0}",crap.Message));
-                 }
+                    Log("ERROR: SetFuel[debug]", crap.Message);
+                    Game.Console.Print(String.Format("Error setting fuel: {0}", crap.Message));
+                }
             });
 #endif
 
@@ -121,11 +121,11 @@ namespace FuelScript
 
             // Then log the rest of bla blas...
             Log("FuelScript", "Realistic Fuel Mod " + version + " for GTA IV loaded under GTA IV " + Game.Version.ToString() + " successfully.");
-            Log("FuelScript", "Realistic Fuel Mod is an open-source software on public domain license (https://code.google.com/p/realistic-fuel-mod).");
+            Log("FuelScript", "Realistic Fuel Mod is an open-source software on public domain license (https://github.com/will258012/GTA-IV-Realistic-Fuel-Mod_CHS).");
             Log("FuelScript", "Based on Ultimate Fuel Script v2.1 (https://code.google.com/p/ultimate-fuel-script).");
             Log("FuelScript", "Realistic Fuel Mod " + version + " found dsound.dll " + (File.Exists(Game.InstallFolder + "\\dsound.dll") ? "present" : "not present")
-            + " and SlimDX.dll " + (File.Exists(Game.InstallFolder + "\\SlimDX.dll") ? "present." : "not present.") +
-            " and dinput8.dll " + (File.Exists(Game.InstallFolder + "\\dinput8.dll") ? "present." : "not present.")
+            + ",SlimDX.dll " + (File.Exists(Game.InstallFolder + "\\SlimDX.dll") ? "present" : "not present") +
+            ",and dinput8.dll " + (File.Exists(Game.InstallFolder + "\\dinput8.dll") ? "present." : "not present.")
             );
 
             Log("FuelScript", "Loading settings file: FuelScript.ini...");
@@ -159,7 +159,12 @@ namespace FuelScript
             {
 
                 AGame.PrintText(String.Format("Realistic Fuel Mod {0} 加载成功。", version));
-                Game.DisplayText(String.Format("你有{0}个免费应急燃油瓶。", MaxFuelBottles - UsedFuelBottles), 10000);
+                if(isUpdated(version))
+                    {
+                    Game.DisplayText(String.Format("有新版本可用：{0} --> {1}，请前往 https://github.com/will258012/GTA-IV-Realistic-Fuel-Mod_CHS 下载" ,version,GetLatestVersion()),5000);
+                    Wait(5000);
+                    }
+                Game.DisplayText(String.Format("你有{0}个免费应急燃油瓶。", MaxFuelBottles - UsedFuelBottles), 5000);
             }
 
             // Defualt display type is: CLASSIC.
@@ -223,8 +228,8 @@ namespace FuelScript
             this.OnReserve = false;
 
             // Bind phone number GET-555-FUEL (438-555-3835) to Emergency Fuel Services.
-            BindPhoneNumber("4385553835", new PhoneDialDelegate(PhoneNumberHandler));
-
+            // phone number checks are not available in the Complete Edition
+            //BindPhoneNumber("4385553835", new PhoneDialDelegate(PhoneNumberHandler));
             // Classic mode meter digits styles...
             // FuelMeterFont.Color = ColorIndex.SecuricorLightGray;
             FuelMeterFont.Effect = FontEffect.Edge;
@@ -653,12 +658,10 @@ namespace FuelScript
             // Call out for the native function.
             GTA.Native.Function.Call("PRINT_STRING_WITH_LITERAL_STRING_NOW", "STRING", message, time, true);
         }
+        private Blip ServiceBlip;
         /// <summary>
         /// Handles the phone number dialled.
         /// </summary>
-        private bool isEmergencyServiceCalled = false;
-        private Blip ServiceBlip;
-        private bool isAgentArrived = false;
         private void PhoneNumberHandler()
         {
             try
@@ -674,48 +677,16 @@ namespace FuelScript
                         if (Player.Money > Convert.ToInt32(ServiceCost))
                         {
                             // Show while initializing...
-                            if (isEmergencyServiceCalled)
+                            if (Settings.GetValueBool("EMERGENCYCALLTEXT", "TEXTS", true))
                             {
-                                if (!isAgentArrived)
-                                {
-                                    if (Settings.GetValueBool("EMERGENCYCALLTEXT", "TEXTS", true))
-                                    {       
-                                    AGame.PrintText("再次呼叫应急燃油服务中...");
-                                    Wait(500);
-                                    }
-                                    Log("PhoneNumberHandler", "Player requests emergency fuel service again.");
-                                    // 如果先前的应急服务仍在进行中，清除先前的服务相关对象
-                                    ServicePed.Task.ClearAllImmediately();
-                                    ServiceBlip.Delete();
-                                    ServiceVehicle.Delete();
-                                    ServicePed.Delete();
-                                }
-                                else
-                                {
-                                    if (Settings.GetValueBool("EMERGENCYCALLTEXT", "TEXTS", true))
-                                    {
-                                        AGame.PrintText("修理工已到达。你无法再次呼叫。");
-                                    }
-                                    return ;
-                                }
-                            }
-                            else
-                            {
-                                if (Settings.GetValueBool("EMERGENCYCALLTEXT", "TEXTS", true))
-                                    {
-                                    isEmergencyServiceCalled = true;
-                                    AGame.PrintText("呼叫应急燃油服务中...");
-                                    Wait(500);
-                                    }
-                            }
+                            AGame.PrintText("呼叫应急燃油服务中...");
+                            Wait(500);
+                        } 
                             // Lock the doors to avoid from player getting out.
                             CurrentVehicle.DoorLock = DoorLock.ImpossibleToOpen;
 
                             // Fuel Service Drive To position.
                             Vector3 DriveToPosition = CurrentVehicle.GetOffsetPosition(new Vector3(5.0f, 0.0f, 0.0f));
-
-                            // Hood position.
-                            Vector3 HoodPosition = CurrentVehicle.GetOffsetPosition(new Vector3(0.0f, 3.0f, 0.0f));
 
                             // Create a fuel bowser.
                             ServiceVehicle = World.CreateVehicle(new Model("packer"), World.GetNextPositionOnStreet(Player.Character.Position.Around(100.0f)));
@@ -806,8 +777,8 @@ namespace FuelScript
                             // Show after creating required objects.
                             if (Settings.GetValueBool("EMERGENCYONWAYTEXT", "TEXTS", true))
                             {
-                                if (GamePad == null) {AGame.PrintText("一个修理工正在前往你的位置。按住 ~INPUT_ZOOM_RADAR~ 缩放小地图以追踪他。");}
-                                else {AGame.PrintText("一个修理工正在前往你的位置。按住 ~PAD_DPAD_DOWN~ 缩放小地图以追踪他。");}
+                                if (GamePad == null) { AGame.PrintText("一个修理工正在前往你的位置。按住 ~INPUT_ZOOM_RADAR~ 缩放小地图以追踪他。"); }
+                                else { AGame.PrintText("一个修理工正在前往你的位置。按住 ~PAD_DPAD_DOWN~ 缩放小地图以追踪他。"); }
                             }
 
                             Log("PhoneNumberHandler", "Player called to the emergency fuel services.");
@@ -817,7 +788,6 @@ namespace FuelScript
                                 Wait(100);
                             }
 
-                            isAgentArrived = true;
                             // That's enough, get him out of vehicle.
                             ServicePed.Task.LeaveVehicle(ServiceVehicle, true);
 
@@ -826,16 +796,15 @@ namespace FuelScript
                             {
                                 Wait(100);
                             }
-
+                            // Hood position.
+                            Vector3 HoodPosition = CurrentVehicle.GetOffsetPosition(new Vector3(0.0f, 2.0f, 0.0f));
                             // Run to the hood of the target vehicle.
                             ServicePed.Task.RunTo(HoodPosition, false);
-
                             // Wait until he reaches there.
-                            while (ServicePed.Position.DistanceTo(HoodPosition) > 0.5f)
+                            while (ServicePed.Position.DistanceTo(HoodPosition) > 1.5f)
                             {
                                 Wait(100);
                             }
-
                             // Show when the service agent is near the player.
                             if (Settings.GetValueBool("EMERGENCYAGENTTEXT", "TEXTS", true))
                             {
@@ -846,8 +815,8 @@ namespace FuelScript
                             ServicePed.Task.TurnTo(CurrentVehicle.Position);
 
                             // Wait until he done turning.
-                            Wait(1000);
-                        
+                            Wait(1500);
+
                             // Open the hood.
                             ServicePed.Task.PlayAnimation(new AnimationSet("amb@bridgecops"), "open_boot", 4.0f);
 
@@ -885,6 +854,7 @@ namespace FuelScript
                             CurrentVehicle.EngineRunning = true;
                             EngineRunning = true;
                             // Turn off hazard lights.
+                            GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS",CurrentVehicle, false);
                             CurrentVehicle.HazardLightsOn = false;
                             // Repair the engine.
                             CurrentVehicle.EngineHealth = 1000.0f;
@@ -930,9 +900,6 @@ namespace FuelScript
                             // Really? Who does want a bowser? :D
                             ServicePed.NoLongerNeeded();
                             ServiceVehicle.NoLongerNeeded();
-
-                            isEmergencyServiceCalled = false;
-                            isAgentArrived = false;
                         }
                         else
                         {
@@ -1124,56 +1091,76 @@ namespace FuelScript
 
                     // Turn hazard lights on to assist the traffic!
                     // Fix for compatibility issue with Indicator Mod
-                    AVehicle Veh = TypeConverter.ConvertToAVehicle(CurrentVehicle);
+                    //it seems that does not work anymore
+/*                     AVehicle Veh = TypeConverter.ConvertToAVehicle(CurrentVehicle);
                     // just making sure all blinkers are active
                     MethodInfo method = Veh.GetType().GetMethod("IndicatorLight");
                     (method.Invoke(Veh, new object[] { 0 }) as AIndicatorLight).On = true;
                     (method.Invoke(Veh, new object[] { 1 }) as AIndicatorLight).On = true;
                     (method.Invoke(Veh, new object[] { 2 }) as AIndicatorLight).On = true;
                     (method.Invoke(Veh, new object[] { 3 }) as AIndicatorLight).On = true;
+ */
+                    GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS",CurrentVehicle, true);
                     CurrentVehicle.HazardLightsOn = true;
-
                     // Set fuel level as zero for double sure. And to avoid the gauge bar be drawn backwards, ending up with a green line outside the gauge boundaries.
                     CurrentVehicle.Metadata.Fuel = 0;
 
                     // Smoking a little maybe? (only if he isn't damaged too much)
                     CurrentVehicle.EngineHealth = (CurrentVehicle.EngineHealth > 100.0f) ? 100.0f : CurrentVehicle.EngineHealth;
-                    CurrentVehicle.Metadata.NoFuelDamage = (bool)true;
+                    CurrentVehicle.Metadata.NoFuelDamage = true;
 
                     // This is shown when the vehicle ran out of fuel.
                     if (Settings.GetValueBool("OUTOFFUELTEXT", "TEXTS", true) && !ranOutMessageDisplayed)
                     {
-                        // Shows when ran out of fuel. EDIT: I've trie to changed this to chained if's but for now it stays like that
-                        Game.DisplayText((
-                            ((MaxFuelBottles - UsedFuelBottles) >= 1)
-                        ? ((CurrentVehicle.Speed == 0.0f)
-                            ? "按下 [" + Settings.GetValueKey("BOTTLEUSEKEY", "KEYS", Keys.U) + "] 键使用应急燃油瓶。" + ((((MaxFuelBottles - UsedFuelBottles) - 1) >= 1)
-                                ? "你还有 " + (MaxFuelBottles - UsedFuelBottles) + " 个燃油瓶" + (((MaxFuelBottles - UsedFuelBottles) == 1) ? "" : "s") + "。" + ((UsedFuelBottles > 0)
-                                    ? "为你的 " + UsedFuelBottles + " 个空燃油瓶添加燃油费用为 $" + (UsedFuelBottles * FuelBottleCost) + "（每个 $" + FuelBottleCost + "）。"
-                                        : "一个已用过的应急燃油瓶可以在加油站以 $" + FuelBottleCost + " 再次加注。") + "。"
-                                    : "最后一个应急燃油瓶，快找一个加油站！")
-                                : "你的车辆燃油已耗尽，" + (((MaxFuelBottles - UsedFuelBottles) >= 1)
-                                ? "还有 " + (MaxFuelBottles - UsedFuelBottles) + " 个应急燃油瓶。"
-                                    : "且没有应急燃油瓶。") + "请等待车辆停止。")
-                            : "你的车辆燃油已耗尽，且没有剩余应急燃油瓶" + ((CurrentVehicle.Model.isCar || CurrentVehicle.Model.isBike)
-                            ? "燃油已耗尽，车辆无法启动。拨打 GET-555-FUEL 或按下 [" + Settings.GetValueKey("SERVICEKEY", "KEYS", Keys.K) + "] 呼叫应急燃油服务，费用为 $" + ServiceCost + "。你也可以换一辆车。"
-                                : "")),6000);
+                        // Shows when ran out of fuel. 
+                        if ((MaxFuelBottles - UsedFuelBottles) >= 1)
+                        {
+                            if (CurrentVehicle.Speed == 0.0f)
+                            {
+                                AGame.PrintText(
+                            "按下 [" + Settings.GetValueKey("BOTTLEUSEKEY", "KEYS", Keys.U) + "] 键使用应急燃油瓶。" + (((MaxFuelBottles - UsedFuelBottles - 1) >= 1)
+                                    ? "你还有 " + (MaxFuelBottles - UsedFuelBottles) + " 个燃油瓶" + "。" + ((UsedFuelBottles > 0)
+                                        ? "购买" + UsedFuelBottles + "个燃油瓶的总费用为 $" + (UsedFuelBottles * FuelBottleCost) + "（每个 $" + FuelBottleCost + "）。"
+                                        : "~n~一个应急燃油瓶可以在加油站以 $" + FuelBottleCost + "购买。")
+                                    : "~n~最后一个应急燃油瓶，快找一个加油站！"));
+                            }
+                            else
+                            {
+                                AGame.PrintText(
+                            "你的车辆燃油已耗尽，" + (((MaxFuelBottles - UsedFuelBottles) >= 1)
+                                ? "还有" + (MaxFuelBottles - UsedFuelBottles) + "个应急燃油瓶。"
+                                : "且没有应急燃油瓶。") + "请等待车辆停止。");
+                                    while(!(CurrentVehicle.Speed == 0.0f)) Wait(100);
+                                    
+                                AGame.PrintText(
+                            "按下 [" + Settings.GetValueKey("BOTTLEUSEKEY", "KEYS", Keys.U) + "] 键使用应急燃油瓶。" + (((MaxFuelBottles - UsedFuelBottles - 1) >= 1)
+                                    ? "你还有 " + (MaxFuelBottles - UsedFuelBottles) + " 个燃油瓶" + "。" + ((UsedFuelBottles > 0)
+                                        ? "购买" + UsedFuelBottles + "个燃油瓶的总费用为 $" + (UsedFuelBottles * FuelBottleCost) + "（每个 $" + FuelBottleCost + "）。"
+                                        : "~n~一个应急燃油瓶可以在加油站以 $" + FuelBottleCost + "购买。")
+                                    : "~n~最后一个应急燃油瓶，快找一个加油站！"));
+                            }
+                        }
+                        else
+                        {
+                            AGame.PrintText(
+                            "你的车辆燃油已耗尽，且没有剩余应急燃油瓶" + ((CurrentVehicle.Model.isCar || CurrentVehicle.Model.isBike)
+                            ? "，车辆无法启动。~n~按下 [" + Settings.GetValueKey("SERVICEKEY", "KEYS", Keys.K) + "] 呼叫应急燃油服务，费用为 $" + ServiceCost + "。你也可以换一辆车。"
+                                : "。"));
+                        }
 
                         ranOutMessageDisplayed = true;
-
-                        // Log("DrainFuel", "Player ran out of fuel on vehicle: " + CurrentVehicle.Name.ToString() + " as " + CurrentVehicle.Metadata.Fuel + " fuel units and " + CurrentVehicle.Metadata.Reserve + " reserve units.");
-
-                        // Mass angry when Niko lost a vehicle...
-                        // NOTE: Something weired happening, exact thing runs. But last only around a second!
-                        /*
-                        if (CurrentVehicle.Metadata.Fuel == 0 && UsedFuelBottles == MaxFuelBottles)
-                        {
-                            Player.Character.SayAmbientSpeech("HIGH_FALL");
-                            GTA.Native.Function.Call("SET_CAM_SHAKE", Game.DefaultCamera, true, 10);
-                        }
-                        */
-
                     }
+                    // Log("DrainFuel", "Player ran out of fuel on vehicle: " + CurrentVehicle.Name.ToString() + " as " + CurrentVehicle.Metadata.Fuel + " fuel units and " + CurrentVehicle.Metadata.Reserve + " reserve units.");
+
+                    // Mass angry when Niko lost a vehicle...
+                    // NOTE: Something weired happening, exact thing runs. But last only around a second!
+                    /*
+                    if (CurrentVehicle.Metadata.Fuel == 0 && UsedFuelBottles == MaxFuelBottles)
+                    {
+                        Player.Character.SayAmbientSpeech("HIGH_FALL");
+                        GTA.Native.Function.Call("SET_CAM_SHAKE", Game.DefaultCamera, true, 10);
+                    }
+                    */
                 }
 
                 // Is the player near a fueling station, then give him some help!
@@ -1190,8 +1177,8 @@ namespace FuelScript
                             // Do we about to steal fuel? Are we near a fuel steal point?
                             if (Settings.GetValueInteger("STARS", StationName + isAtFuelStation(), 0) > 0)
                             {
-                                AGame.PrintText(String.Format("你可以按下[{1}]在~y~{0}~w~偷取燃油。~n~小心 ~b~警察~w~，不然你会被通缉 ~r~{2}~w~ 颗星。~n~其他人也可能会攻击你，请小心行事。",
-                                    Settings.GetValueString("NAME", StationName + isAtFuelStation(), "this refuel spot"),
+                                AGame.PrintText(String.Format("按下[{1}]在~y~{0}~w~偷取燃油。~n~小心 ~b~警察~w~，不然你会被~r~{2}~w~星通缉。~n~其他人也可能会攻击你，请小心行事。",
+                                    Settings.GetValueString("NAME", StationName + isAtFuelStation(), "此处"),
                                     Settings.GetValueKey("REFUELKEY", "KEYS", Keys.E),
                                     Settings.GetValueInteger("STARS", StationName + isAtFuelStation(), 0)));
                             }
@@ -1199,7 +1186,7 @@ namespace FuelScript
                             else
                             {
                                 string welcomeText = String.Format("欢迎光临~y~{0}~w~加油站。油价为 ${1}/升。~n~按下[{2}]加油, 加满需花费 ${3}。",
-                                    Settings.GetValueString("NAME", StationName + isAtFuelStation(), "This"),
+                                    Settings.GetValueString("NAME", StationName + isAtFuelStation(), "此"),
                                     Settings.GetValueFloat("PRICE", "STATION" + isAtFuelStation(), 6.99f),
                                     Settings.GetValueKey("REFUELKEY", "KEYS", Keys.E),
                                     Convert.ToInt32((CurrentVehicle.Metadata.MaxTank - CurrentVehicle.Metadata.Fuel) * Settings.GetValueFloat("PRICE", StationName + isAtFuelStation(), 6.99f)));
@@ -1390,7 +1377,6 @@ namespace FuelScript
                     CurrentVehicle.EngineRunning = true;
                     EngineRunning = true;
                     CurrentVehicle.NeedsToBeHotwired = false;
-
                     CurrentVehicle.HazardLightsOn = false;
 
                     // Turn on lights if required.
@@ -1413,7 +1399,7 @@ namespace FuelScript
                     // Log about the refuel.
                     else
                     {
-                        AGame.PrintText(String.Format("感谢惠顾 ~y~{0}~w~ 加油站。已支付 ${1}。", Settings.GetValueString("NAME", StationName + isAtFuelStation(), "this"), Convert.ToInt32(RefuelAmount * Settings.GetValueFloat("PRICE", StationName + isAtFuelStation(), 6.99f))));
+                        AGame.PrintText(String.Format("感谢惠顾 ~y~{0}~w~ 加油站。已支付 ${1}。", Settings.GetValueString("NAME", StationName + isAtFuelStation(), "此"), Convert.ToInt32(RefuelAmount * Settings.GetValueFloat("PRICE", StationName + isAtFuelStation(), 6.99f))));
                         //Game.DisplayText("You've refueled vehicle with " + Convert.ToInt32(RefuelAmount) + " fuel units for $" + Convert.ToInt32((RefuelAmount * Settings.GetValueFloat("PRICE", station + isAtFuelStation(), 6.99f))) + " at " + Settings.GetValueString("NAME", station + isAtFuelStation(), "Unknown") + " Fueling Station " + isAtFuelStation() + ".", 10000);
                         Log("FinishRefuel", "Player refueled vehicle: " + CurrentVehicle.Name.ToString() + " with " + RefuelAmount + " fuel units for $" + Convert.ToInt32(RefuelAmount * Settings.GetValueFloat("PRICE", StationName + isAtFuelStation(), 6.99f)) + " at " + Settings.GetValueString("NAME", StationName + isAtFuelStation(), "Unknown") + " Fueling Station " + isAtFuelStation() + ".");
                     }
@@ -1509,17 +1495,16 @@ namespace FuelScript
             try
             {
                 // Retreive version file from the repository
-                return new WebClient().DownloadString(@"http:\\realistic-fuel-mod.googlecode.com/svn/trunk/FuelScript/FuelScript/Resources/version");
+                return new WebClient().DownloadString(@"https://github.com/will258012/GTA-IV-Realistic-Fuel-Mod_CHS/blob/master/version");
             }
             catch (Exception)
             {
-                // Most likelly internet is down, more important we can't figure out any version
                 return "server offline";
             }
         }
         /// <summary>
         /// Compares the latest release version with current running version.
-        /// Returns true if the server is unavailable or if the current running version is higher or equal to the latest version
+        /// Returns true if the current running version is higher or equal to the latest version
         /// </summary>
         /// <param name="CurrentFileVersion">variable version</param>
         /// <returns></returns>
@@ -1527,14 +1512,15 @@ namespace FuelScript
         {
             // If this is a develpment verson, no reason to continue
             if (CurrentFileVersion.Contains("BETA"))
-                return true;
+                return false;
             // Parse the version string
             CurrentFileVersion = CurrentFileVersion.Replace(".", "").Replace(" BETA", "").Trim();
             // Get latest version
             string LatestFileVersion = GetLatestVersion();
             // Server is offline, we will check another time
             if (LatestFileVersion == "server offline")
-                return true;
+                return false;
+            LatestFileVersion = LatestFileVersion.Replace(".", "").Replace(" BETA", "").Trim();
             // Wow, everything cool compare the versions.
             return Convert.ToInt32(CurrentFileVersion) > Convert.ToInt32(LatestFileVersion);
         }
@@ -1668,17 +1654,18 @@ namespace FuelScript
                                     // If so, repair few of the damage in engine, not visual damage!
                                     LastVehicle.EngineHealth = (1000.0f - LastVehicle.EngineHealth) / 3;
                                 }
-
                                 // Give a little fuel capacity...
                                 LastVehicle.Metadata.Fuel = LastVehicle.Metadata.MaxTank / 2;
                                 // Not on reserve now...
                                 OnReserve = false;
 
                                 // Wait until Niko done animations.
-                                Wait(1500);
+                                Wait(1000);
 
                                 // Startup the engine.
                                 LastVehicle.EngineRunning = true;
+                                EngineRunning = true;
+                                GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS",LastVehicle, false);
                                 LastVehicle.HazardLightsOn = false;
                                 Player.Character.Task.EnterVehicle(LastVehicle, VehicleSeat.Driver);
 
@@ -1721,6 +1708,7 @@ namespace FuelScript
                                 // Startup the engine.
                                 CurrentVehicle.EngineRunning = true;
                                 EngineRunning = true;
+                                GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS",CurrentVehicle, false);
                                 CurrentVehicle.HazardLightsOn = false;
                             }
 
@@ -1731,7 +1719,7 @@ namespace FuelScript
                             // Game.DisplayText("You injected " + Convert.ToInt32(CurrentVehicle.Metadata.Fuel) + " litre(s) of fuel to your vehicle.", 6000);
                             Log("VehicleRepair", "Player injected " + Convert.ToInt32(CurrentVehicle.Metadata.Fuel) + " litre(s) of fuel for vehicle: " + CurrentVehicle.Name.ToString() + " with bottle " + (UsedFuelBottles + 1) + ".");
 
-                            CurrentVehicle.Metadata.NoFuelDamage = (bool)false;
+                            CurrentVehicle.Metadata.NoFuelDamage = false;
 
                             // Cost one fuel bottle...
                             UsedFuelBottles += 1;
@@ -1767,7 +1755,7 @@ namespace FuelScript
                             // Let the player know.
                             if (Settings.GetValueBool("BOTTLEPURCHASETEXT", "TEXTS", true))
                             {
-                                AGame.PrintText(String.Format("你花费了 ${0} 购买了一个应急燃油瓶。现在你有{1}个应急燃油瓶。", FuelBottleCost, MaxFuelBottles - UsedFuelBottles));
+                                AGame.PrintText(String.Format("你花费了 ${0}购买了一个应急燃油瓶。现在你有{1}个应急燃油瓶。", FuelBottleCost, MaxFuelBottles - UsedFuelBottles));
                             }
 
                             Log("KeyDown", "Player purchased one more emergency fuel bottle on vehicle: " + CurrentVehicle.Name.ToString() + " and now have " + (MaxFuelBottles - UsedFuelBottles) + " out of " + MaxFuelBottles + " bottles.");
@@ -1875,7 +1863,7 @@ namespace FuelScript
                             // Specially, if the mission is based on time, he can't go refuel it, can he?
                             if (Settings.GetValueBool("MISSIONREQUIREDTEXT", "TEXTS", true))
                             {
-                                Game.DisplayText("你的车辆当前在任务中，不会消耗燃油。", 8000);
+                                AGame.PrintText("此车辆当前在任务中，不会消耗燃油。");
                             }
 
                             Log("DrainFuel", "Fuel is not draining on vehicle: " + CurrentVehicle.Name.ToString() + " as it's required for a mission.");
@@ -1889,15 +1877,28 @@ namespace FuelScript
                                 float FuelAvailability = Convert.ToInt32(CurrentVehicle.Metadata.Fuel) * 100 / Convert.ToInt32(CurrentVehicle.Metadata.MaxTank);
 
                                 // When player gets into a vehicle, so it's status.
-                                AGame.PrintText(String.Format("该车辆的{1}升油箱中目前剩余 {0:00}%的燃油。", CurrentVehicle.Metadata.Fuel * 100 / CurrentVehicle.Metadata.MaxTank, CurrentVehicle.Metadata.MaxTank));
-                                if (MaxFuelBottles - UsedFuelBottles < 1)
-                                    Game.DisplayText("你没有应急燃油瓶了。", 5000);
+                                if (CurrentVehicle.Metadata.Fuel == 0)
+                                {
+                                    string message = "该车辆燃油已耗尽。"; 
+                                    if (MaxFuelBottles - UsedFuelBottles < 1)
+                                        message += String.Format("可按下[{0}]键呼叫应急燃油服务。",Settings.GetValueKey("SERVICEKEY", "KEYS", Keys.K));
+                                    else
+                                        message += String.Format("可按下[{0}]键使用应急燃油瓶。",Settings.GetValueKey("BOTTLEUSEKEY", "KEYS", Keys.U));
+                                    AGame.PrintText(message);
+                                }
                                 else
-                                    Game.DisplayText(String.Format("你还有{0}个应急燃油瓶。", MaxFuelBottles - UsedFuelBottles), 5000);
+                                { 
+                                    AGame.PrintText(String.Format("该车辆的{1}升油箱中目前剩余 {0:00}%的燃油。", CurrentVehicle.Metadata.Fuel * 100 / CurrentVehicle.Metadata.MaxTank, CurrentVehicle.Metadata.MaxTank));
+                                    if (MaxFuelBottles - UsedFuelBottles < 1)
+                                        Game.DisplayText("你没有应急燃油瓶了。", 5000);
+                                    else
+                                        Game.DisplayText(String.Format("你还有{0}个应急燃油瓶。", MaxFuelBottles - UsedFuelBottles), 5000);
+                                
+                                }
                             }
 
                             // Mark it as not damaged by low fuel running.
-                            CurrentVehicle.Metadata.NoFuelDamage = (bool)false;
+                            CurrentVehicle.Metadata.NoFuelDamage = false;
                         }
                     }
                 }
