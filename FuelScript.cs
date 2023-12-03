@@ -159,11 +159,11 @@ namespace FuelScript
             {
 
                 AGame.PrintText(String.Format("Realistic Fuel Mod {0} 加载成功。", version));
-                if(isUpdated(version))
-                    {
-                    Game.DisplayText(String.Format("有新版本可用：{0} --> {1}，请前往 https://github.com/will258012/GTA-IV-Realistic-Fuel-Mod_CHS 下载" ,version,GetLatestVersion()),5000);
+                if (isUpdated(version))
+                {
+                    Game.DisplayText(String.Format("有新版本可用：{0} --> {1}，请前往 https://github.com/will258012/GTA-IV-Realistic-Fuel-Mod_CHS 下载", version, GetLatestVersion()), 5000);
                     Wait(5000);
-                    }
+                }
                 Game.DisplayText(String.Format("你有{0}个免费应急燃油瓶。", MaxFuelBottles - UsedFuelBottles), 5000);
             }
 
@@ -679,9 +679,9 @@ namespace FuelScript
                             // Show while initializing...
                             if (Settings.GetValueBool("EMERGENCYCALLTEXT", "TEXTS", true))
                             {
-                            AGame.PrintText("呼叫应急燃油服务中...");
-                            Wait(500);
-                        } 
+                                AGame.PrintText("呼叫应急燃油服务中...");
+                                Wait(500);
+                            }
                             // Lock the doors to avoid from player getting out.
                             CurrentVehicle.DoorLock = DoorLock.ImpossibleToOpen;
 
@@ -797,11 +797,11 @@ namespace FuelScript
                                 Wait(100);
                             }
                             // Hood position.
-                            Vector3 HoodPosition = CurrentVehicle.GetOffsetPosition(new Vector3(0.0f, 2.0f, 0.0f));
+                            Vector3 HoodPosition = CurrentVehicle.GetOffsetPosition(new Vector3(0.0f, 1.5f, 0.0f));
                             // Run to the hood of the target vehicle.
                             ServicePed.Task.RunTo(HoodPosition, false);
                             // Wait until he reaches there.
-                            while (ServicePed.Position.DistanceTo(HoodPosition) > 1.5f)
+                            while (ServicePed.Position.DistanceTo(HoodPosition) > 1.0f)
                             {
                                 Wait(100);
                             }
@@ -819,7 +819,6 @@ namespace FuelScript
 
                             // Open the hood.
                             ServicePed.Task.PlayAnimation(new AnimationSet("amb@bridgecops"), "open_boot", 4.0f);
-
                             // Open it... really...
                             CurrentVehicle.Door(VehicleDoor.Hood).Open();
                             Wait(1200);
@@ -827,7 +826,7 @@ namespace FuelScript
                             // Do his magic...
                             ServicePed.Task.PlayAnimation(new AnimationSet("misstaxidepot"), "workunderbonnet", 4.0f);
 
-                            // Wait until Niko done repairing the vehicle.
+                            // Wait until Agent done repairing the vehicle.
                             Wait(5000);
 
                             // Close the hood.
@@ -854,7 +853,7 @@ namespace FuelScript
                             CurrentVehicle.EngineRunning = true;
                             EngineRunning = true;
                             // Turn off hazard lights.
-                            GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS",CurrentVehicle, false);
+                            GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS", CurrentVehicle, false);
                             CurrentVehicle.HazardLightsOn = false;
                             // Repair the engine.
                             CurrentVehicle.EngineHealth = 1000.0f;
@@ -1092,22 +1091,22 @@ namespace FuelScript
                     // Turn hazard lights on to assist the traffic!
                     // Fix for compatibility issue with Indicator Mod
                     //it seems that does not work anymore
-/*                     AVehicle Veh = TypeConverter.ConvertToAVehicle(CurrentVehicle);
-                    // just making sure all blinkers are active
-                    MethodInfo method = Veh.GetType().GetMethod("IndicatorLight");
-                    (method.Invoke(Veh, new object[] { 0 }) as AIndicatorLight).On = true;
-                    (method.Invoke(Veh, new object[] { 1 }) as AIndicatorLight).On = true;
-                    (method.Invoke(Veh, new object[] { 2 }) as AIndicatorLight).On = true;
-                    (method.Invoke(Veh, new object[] { 3 }) as AIndicatorLight).On = true;
- */
-                    GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS",CurrentVehicle, true);
+                    /*                     AVehicle Veh = TypeConverter.ConvertToAVehicle(CurrentVehicle);
+                                        // just making sure all blinkers are active
+                                        MethodInfo method = Veh.GetType().GetMethod("IndicatorLight");
+                                        (method.Invoke(Veh, new object[] { 0 }) as AIndicatorLight).On = true;
+                                        (method.Invoke(Veh, new object[] { 1 }) as AIndicatorLight).On = true;
+                                        (method.Invoke(Veh, new object[] { 2 }) as AIndicatorLight).On = true;
+                                        (method.Invoke(Veh, new object[] { 3 }) as AIndicatorLight).On = true;
+                     */
+                    GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS", CurrentVehicle, true);
                     CurrentVehicle.HazardLightsOn = true;
                     // Set fuel level as zero for double sure. And to avoid the gauge bar be drawn backwards, ending up with a green line outside the gauge boundaries.
                     CurrentVehicle.Metadata.Fuel = 0;
 
                     // Smoking a little maybe? (only if he isn't damaged too much)
                     CurrentVehicle.EngineHealth = (CurrentVehicle.EngineHealth > 100.0f) ? 100.0f : CurrentVehicle.EngineHealth;
-                    CurrentVehicle.Metadata.NoFuelDamage = true;
+                    CurrentVehicle.Metadata.NoFuelDamage = (bool)true;
 
                     // This is shown when the vehicle ran out of fuel.
                     if (Settings.GetValueBool("OUTOFFUELTEXT", "TEXTS", true) && !ranOutMessageDisplayed)
@@ -1130,8 +1129,8 @@ namespace FuelScript
                             "你的车辆燃油已耗尽，" + (((MaxFuelBottles - UsedFuelBottles) >= 1)
                                 ? "还有" + (MaxFuelBottles - UsedFuelBottles) + "个应急燃油瓶。"
                                 : "且没有应急燃油瓶。") + "请等待车辆停止。");
-                                    while(!(CurrentVehicle.Speed == 0.0f)) Wait(100);
-                                    
+                                while (!(CurrentVehicle.Speed == 0.0f)) Wait(100);
+
                                 AGame.PrintText(
                             "按下 [" + Settings.GetValueKey("BOTTLEUSEKEY", "KEYS", Keys.U) + "] 键使用应急燃油瓶。" + (((MaxFuelBottles - UsedFuelBottles - 1) >= 1)
                                     ? "你还有 " + (MaxFuelBottles - UsedFuelBottles) + " 个燃油瓶" + "。" + ((UsedFuelBottles > 0)
@@ -1665,7 +1664,7 @@ namespace FuelScript
                                 // Startup the engine.
                                 LastVehicle.EngineRunning = true;
                                 EngineRunning = true;
-                                GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS",LastVehicle, false);
+                                GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS", LastVehicle, false);
                                 LastVehicle.HazardLightsOn = false;
                                 Player.Character.Task.EnterVehicle(LastVehicle, VehicleSeat.Driver);
 
@@ -1708,7 +1707,7 @@ namespace FuelScript
                                 // Startup the engine.
                                 CurrentVehicle.EngineRunning = true;
                                 EngineRunning = true;
-                                GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS",CurrentVehicle, false);
+                                GTA.Native.Function.Call("SET_VEH_INDICATORLIGHTS", CurrentVehicle, false);
                                 CurrentVehicle.HazardLightsOn = false;
                             }
 
@@ -1879,26 +1878,26 @@ namespace FuelScript
                                 // When player gets into a vehicle, so it's status.
                                 if (CurrentVehicle.Metadata.Fuel == 0)
                                 {
-                                    string message = "该车辆燃油已耗尽。"; 
+                                    string message = "该车辆燃油已耗尽。";
                                     if (MaxFuelBottles - UsedFuelBottles < 1)
-                                        message += String.Format("可按下[{0}]键呼叫应急燃油服务。",Settings.GetValueKey("SERVICEKEY", "KEYS", Keys.K));
+                                        message += String.Format("可按下[{0}]键呼叫应急燃油服务。", Settings.GetValueKey("SERVICEKEY", "KEYS", Keys.K));
                                     else
-                                        message += String.Format("可按下[{0}]键使用应急燃油瓶。",Settings.GetValueKey("BOTTLEUSEKEY", "KEYS", Keys.U));
+                                        message += String.Format("可按下[{0}]键使用应急燃油瓶。", Settings.GetValueKey("BOTTLEUSEKEY", "KEYS", Keys.U));
                                     AGame.PrintText(message);
                                 }
                                 else
-                                { 
+                                {
                                     AGame.PrintText(String.Format("该车辆的{1}升油箱中目前剩余 {0:00}%的燃油。", CurrentVehicle.Metadata.Fuel * 100 / CurrentVehicle.Metadata.MaxTank, CurrentVehicle.Metadata.MaxTank));
                                     if (MaxFuelBottles - UsedFuelBottles < 1)
                                         Game.DisplayText("你没有应急燃油瓶了。", 5000);
                                     else
                                         Game.DisplayText(String.Format("你还有{0}个应急燃油瓶。", MaxFuelBottles - UsedFuelBottles), 5000);
-                                
+
                                 }
                             }
 
                             // Mark it as not damaged by low fuel running.
-                            CurrentVehicle.Metadata.NoFuelDamage = false;
+                            CurrentVehicle.Metadata.NoFuelDamage = (bool)false;
                         }
                     }
                 }
