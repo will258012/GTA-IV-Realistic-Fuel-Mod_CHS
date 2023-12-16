@@ -6,7 +6,7 @@
 
 ## 安装
 
-### 在安装此脚本之前，请先安装[GTAIV完整版 汉化补丁](https://b9348.gitee.io/index.html)，这是显示中文字符的前提条件。
+### 在安装此脚本之前，请先安装[GTAIV完整版 汉化补丁](https://b9348.gitee.io/)，这是显示中文字符的前提条件。
 
 将[Releases](https://github.com/will258012/GTA-IV-Realistic-Fuel-Mod_CHS/releases)中下载的文件解压缩至游戏根目录即可。
 
@@ -21,7 +21,7 @@
 
 ## 工具
 
-如果需要更改燃油表的显示位置，请使用DashboardPositioner.exe。
+如果需要调整燃油表的显示位置，请使用DashboardPositioner.exe。
 
 ## FAQ
 
@@ -39,9 +39,24 @@ A. 如果你想添加一个新的点位，在设置（.ini）中的“汽车、�
 
 ## 更新日志
 
-### 2.5.x.x
+### 2.5.0.38350
 
-汉化模组
+#### 新增
+
+- 汉化整个模组
+- 添加对EFLC部分的支持
+- 添加检查更新机制
+
+
+#### 调整
+
+- 因为支持问题，无法再通过电话呼叫应急燃油服务
+- 优化应急燃油服务的体验
+
+#### 修复
+
+- 修复燃油耗尽时无法显示提示的问题
+- 修复无法购买应急燃油瓶的问题
 
 ### 2.4.x.x
 
@@ -59,7 +74,7 @@ Optional parameter DISPLAY added to all fuel station types. Read stations sectio
 
 Optional software download to simplify moving the fuel gauge around the screen. Check section HELPFUL DOWNLOADS of this file.
 
-#### 更改
+#### 调整
 
 Big changes in the message display system, might still not be perfect.
 
@@ -100,7 +115,7 @@ Some of the new features might miss source code comments.
 
  Added text notification configurations for EMERGENCYCALLTEXT, EMERGENCYONWAYTEXT, EMERGENCYAGENTTEXT, EMERGENCYDONETEXT.
 
-#### 更改
+#### 调整
 
 Optimized FuelScript_Tick() function to be calculated a little more faster.
 
