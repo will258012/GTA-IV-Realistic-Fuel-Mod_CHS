@@ -60,85 +60,52 @@ A. 如果你想添加一个新的点位，在设置（.ini）中的“汽车、�
 
 ### 2.4.x.x
 
-FIX Ported to GTA IV version 1.2.0.43.
+#### 修复
+- 将脚本适配至1.2.0.43版本。
 
 ### 2.3.x.x
 
 #### 新增
-
-A whole lot of fuel stealing locations all around Liberty City, and more to come. (Thanks to yoshiko, for providing a lot of locations)
-
-Added a new fuel station that somehow we've never noticed.
-
-Optional parameter DISPLAY added to all fuel station types. Read stations section at ini file.
-
-Optional software download to simplify moving the fuel gauge around the screen. Check section HELPFUL DOWNLOADS of this file.
+- 在自由城添加了许多偷油点位。（感谢 yoshiko 提供的点位！）
+- 新增了一个之前未发现的加油站。
+- 所有加油站类型增加了可选参数DISPLAY（查阅ini文件中的加油站部分）。
+- 提供了一个可选软件下载，用于简化油表在屏幕上的移动（见本文件的HELPFUL DOWNLOADS部分）。
 
 #### 调整
-
-Big changes in the message display system, might still not be perfect.
-
-Fuel bottles now give you 12 of a tank, instead of 13.
-
-Mod version scheme, changed to Major.Minor.Revision.Build, you can get the specific code for a version by checking
-out the trunk folder with the revision specified in the mod version.
+- 信息显示系统进行了重大更改。
+- 燃料瓶现在提供12/13的油量，而非之前的13/13。
+- 更改了模组版本号的命名规则。
 
 #### 修复
-
-Compatability fix for indicator mods.
-
-Fixed potential script crash when using fuel bottle in a bus.
-
-Reserve sound path incorrect.
-
-Minor fixes to Emergency Fuel Service animations.
+- 修复了与指示器模组的兼容性问题。
+- 修复了在公交车上使用燃料瓶时可能导致的脚本崩溃。
+- 修正了声音路径。
+- 对紧急燃油服务动画进行了小修改。
 
 #### 注意
-
-Some of the new features might miss source code comments.
+- 新功能中可能缺少源代码注释。
 
 ### 2.2.0.4
 
 #### 新增
-
- Emergency Fuel Service! Call to GET-555-FUEL (438-555-3835) or press K (if phone number checks are not working on yours) to call a emergency fuel bouser, which will enter your scene when you ran out of all options (no fuel bottles and couldn't reach to a fueling station in time).
-
- Now you can set how much fuel bottles player can carry as maximum (MAXFUELBOTTLES).
-
- Now you can set how much free fuel bottles should be added to the player's inventory when the game loaded (FREEBOTTLES).
-
- Now you can set how much should player spend to get one fuel bottle (FUELBOTTLECOST).
-
- Now you can set how much should player cost to get emergency fuel service call (SERVICECOST).
-
- Now you can set which key should press to call emergency fuel service if phone number checks are not working (calling won't work) by SERVICEKEY.
-
- Added text notification configurations for EMERGENCYCALLTEXT, EMERGENCYONWAYTEXT, EMERGENCYAGENTTEXT, EMERGENCYDONETEXT.
+- 添加了紧急燃油服务！
+- 可设置玩家最大可携带燃料瓶数量（MAXFUELBOTTLES）。
+- 可设置游戏加载时玩家免费获得的燃料瓶数量（FREEBOTTLES）。
+- 可设置玩家购买单个燃料瓶的费用（FUELBOTTLECOST）。
+- 可设置紧急燃油服务的费用（SERVICECOST）。
+- 可设置呼叫紧急燃油服务的快捷键（SERVICEKEY）。
+- 增加了紧急呼叫相关的文本通知配置。
 
 #### 调整
-
-Optimized FuelScript_Tick() function to be calculated a little more faster.
-
-Added back Play() function to play embedded sound when player enters to the reserved fuel on a vehicle.
+- 优化了FuelScript_Tick()函数，提高计算速度。
+- 添加了Play()函数，当玩家油量将耗尽时，播放声音。
 
 #### 修复
-
- Fixed few percentage and amount calculators to use String.Format() which is a little more faster in overall performance (Solution by Pedro).
-
- Beta versions doesn't say that it's a beta properly.
-
- Crash when player gets back to vehicle after refueling his vehicle with a fuel bottle.
-
- Crash when player luckily gets to a fueling station even when no fuel (using the speed he gained in the vehicle).
-
- Fixed few comments which were commented with wrongful meaning.
-
- Fixed script crash when player taking too much time to get back in vehicle after injecting a fuel bottle (known when player runs on lower FPS than game playable FPS, it crashes as player takes too much time to get back on vehicle).
-
- Fixed unwanted double if checks which can be collapsed into one check.
-
- Dozen more minor bugs has been fixed.
+- 修复了使用String.Format()的百分比和数量计算器，提高整体性能。
+- 修复了beta版本标识不准确的问题。
+- 修复了使用燃料瓶加油后重新上车时的崩溃问题。
+- 修复了脚本崩溃问题，当玩家在注射燃料瓶后花费太长时间重新上车时发生（通常在低FPS下）。
+- 修复了更多小错误。
 
 #### 注意
-
-Fully commented newly added features and functions on the source code.
+- 源代码中新添加的功能和函数已完全注释。
