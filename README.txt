@@ -1,8 +1,11 @@
-该脚本基于Pedro Rodrigues制作的Ultimate Fuel Script v2.1.0.0和Sandakelum制作的Realistic Fuel Script 2.3.145.20929。这个脚本适用于GTA IV完整版 (1.2.0.xx)。
+该脚本基于Pedro Rodrigues制作的Ultimate Fuel Script v2.1.0.0和Sandakelum制作的Realistic Fuel Script 2.3.145.20929。
+这个脚本适用于GTA IV完整版 (1.2.0.xx)。
 
 安装
 
-在安装此脚本之前，请先安装GTAIV完整版汉化补丁（https://b9348.gitee.io/），这是显示中文字符的前提条件。
+在安装此脚本之前，请先安装汉化补丁(https://b9348.gitee.io/)
+为保证脚本正常运行，需同时安装 .NET Framework 4.8
+(https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer)。
 将所有文件解压缩至游戏根目录即可。
 
 注意
