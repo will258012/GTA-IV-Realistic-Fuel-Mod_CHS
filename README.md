@@ -8,7 +8,7 @@
 
 ### 在安装此脚本之前，请先安装[GTAIV完整版 汉化补丁](https://b9348.gitee.io/)，这是显示中文字符的前提条件。
 
-### 为保证脚本正常运行，需同时安装 [.NET Framework 4.8](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer)。
+### 为保证脚本正常运行，需同时安装 [.NET Framework 4.8 运行时](https://dotnet.microsoft.com/download/dotnet-framework/thank-you/net48-web-installer)。
 
 将[Releases](https://github.com/will258012/GTA-IV-Realistic-Fuel-Mod_CHS/releases)中下载的文件解压缩至游戏根目录即可。
 
